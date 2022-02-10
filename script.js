@@ -1,6 +1,6 @@
 let tasks = []
 let task = ""
-let editingId = -1
+let editingId = -1 //id-ul elementului care se editeaza
 
 function setValue(){
     task = document.getElementById("myInput").value
@@ -9,11 +9,12 @@ function setValue(){
 function newElement(){
     tasks.push(task)
     drawList()
-    console.log(tasks)
     document.getElementById("myInput").value = ""
 }
 
 function editElement(id){
+    //daca editingId este -1 => nu se editeaza nici un element 
+    //la momentul apelarii functiei
     if (editingId != -1)
         return
     const addButton = document.getElementById("addButton")
@@ -26,24 +27,26 @@ function editElement(id){
 }
 
 function saveElement(){
-    const addButton = document.getElementById("addButton")
-    const editButton = document.getElementById("editButton")
-    if (editingId >= 0 && editingId < tasks.length)
+    if (editingId >= 0 && editingId < tasks.length){
+        const addButton = document.getElementById("addButton")
+        const editButton = document.getElementById("editButton")
         tasks[editingId] = task
-    addButton.style.display = "block"
-    editButton.style.display = "none"
-    drawList()
-    document.getElementById("myInput").value = ""
-    editingId = -1
+        addButton.style.display = "block"
+        editButton.style.display = "none"
+        drawList()
+        document.getElementById("myInput").value = ""
+        editingId = -1
+    }
 }
 
 function deleteElement(id){
-    if (editingId == -1 && id >= 0 && id < tasks.length)
-        tasks.splice(id, 1)
+    if (editingId != -1)
+        return
+    tasks.splice(id, 1)
+    drawList()
 }
 
 function drawList(){
-    console.log(tasks)
     document.getElementById("tasks").innerHTML = "" 
 
     // afisaza fiecare task in div id="tasks"
@@ -66,12 +69,7 @@ function drawList(){
         delButton.classList = "close_button"
         delButton.innerHTML = " x "
         delButton.onclick = function(){
-            if(editingId == -1){
-                let div = this.parentElement
-                div.style.display = "none"
-                console.log(div)
-                deleteElement(i)
-            }
+            deleteElement(i)
         }
         div.append(delButton)
         document.getElementById("tasks").append(div)
